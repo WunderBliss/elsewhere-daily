@@ -1,0 +1,59 @@
+import { notFound } from 'next/navigation'
+import { getArticleBySlug, getPublishedArticleSlugs } from '@/lib/db/queries'
+import ArticleContent from '@/components/ArticleContent'
+import type { Metadata } from 'next'
+
+export const dynamicParams = true
+
+export async function generateStaticParams() {
+  const slugs = await getPublishedArticleSlugs()
+  return slugs.map((s) => ({ slug: s.slug }))
+}
+
+interface Props {
+  params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const article = await getArticleBySlug(slug)
+  if (!article) return {}
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? ''
+
+  return {
+    title: `${article.title} | Elsewhere Daily`,
+    description: article.excerpt ?? undefined,
+    alternates: { canonical: `${siteUrl}/${slug}` },
+    openGraph: {
+      title: article.title,
+      description: article.excerpt ?? undefined,
+      type: 'article',
+      publishedTime: article.publishedAt?.toISOString(),
+      url: `${siteUrl}/${slug}`,
+    },
+  }
+}
+
+export default async function ArticlePage({ params }: Props) {
+  const { slug } = await params
+  const article = await getArticleBySlug(slug)
+  if (!article) notFound()
+
+  const date = article.publishedAt
+    ? new Intl.DateTimeFormat('en-US', { dateStyle: 'long' }).format(article.publishedAt)
+    : null
+
+  return (
+    <article>
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">{article.title}</h1>
+        <div className="text-sm text-gray-400 flex gap-2">
+          {article.authorName && <span>{article.authorName}</span>}
+          {date && <span>{date}</span>}
+        </div>
+      </header>
+      <ArticleContent content={article.content ?? ''} />
+    </article>
+  )
+}

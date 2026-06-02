@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:seed": "tsx lib/db/seed.ts",
+    "db:generate": "node --env-file=.env.local ./node_modules/.bin/drizzle-kit generate",
+    "db:migrate": "node --env-file=.env.local ./node_modules/.bin/drizzle-kit migrate",
+    "db:seed": "node --env-file=.env.local ./node_modules/.bin/tsx lib/db/seed.ts",
     "test": "vitest",
     "test:run": "vitest run"
   },

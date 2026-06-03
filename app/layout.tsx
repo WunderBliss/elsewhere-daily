@@ -8,6 +8,7 @@ import { themeInitScript } from '@/lib/theme'
 const geist = Geist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://elsewhere-daily.vercel.app'),
   title: 'Elsewhere Daily',
   description: 'An AI-powered daily newsletter.',
 }

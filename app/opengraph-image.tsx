@@ -40,7 +40,7 @@ export default async function RootOGImage() {
               height: 12,
               background: '#fafafa',
               borderRadius: 9999,
-              display: 'inline-block',
+              display: 'flex',
             }}
           />
           A daily newsletter

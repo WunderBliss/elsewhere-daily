@@ -53,7 +53,7 @@ export default async function ArticleOGImage({
               height: 10,
               background: '#fafafa',
               borderRadius: 9999,
-              display: 'inline-block',
+              display: 'flex',
             }}
           />
           Elsewhere Daily

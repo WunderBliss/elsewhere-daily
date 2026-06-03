@@ -25,6 +25,14 @@ function labelFor(p: ThemePreference): string {
   return 'Dark'
 }
 
+function nextActionLabel(p: ThemePreference): string {
+  // What clicking will do next.
+  const next = nextPref(p)
+  if (next === 'system') return 'Use system theme'
+  if (next === 'light') return 'Switch to light theme'
+  return 'Switch to dark theme'
+}
+
 function iconFor(p: ThemePreference) {
   // Inline SVGs — no new dependencies, no font icons, no asset round-trips.
   if (p === 'light') {
@@ -87,19 +95,22 @@ export default function ThemeToggle() {
     applyTheme(next)
   }
 
+  const current = mounted ? pref : 'system'
+
   return (
     <button
       type="button"
       onClick={cycle}
-      // Render a stable placeholder during SSR/first paint so the button doesn't visibly shift.
-      aria-label={mounted ? `Theme: ${labelFor(pref)}. Click to cycle.` : 'Theme toggle'}
-      title={mounted ? `Theme: ${labelFor(pref)}` : 'Theme'}
-      className="inline-flex items-center gap-1.5 rounded border border-gray-300 dark:border-gray-700 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+      aria-label={nextActionLabel(current)}
+      title={nextActionLabel(current)}
+      className="inline-flex items-center justify-center rounded border border-gray-300 dark:border-gray-700 w-8 h-8 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
     >
       <span className="inline-flex" suppressHydrationWarning>
-        {iconFor(mounted ? pref : 'system')}
+        {iconFor(current)}
       </span>
-      <span suppressHydrationWarning>{mounted ? labelFor(pref) : 'Auto'}</span>
+      <span className="sr-only" suppressHydrationWarning>
+        Current theme: {labelFor(current)}
+      </span>
     </button>
   )
 }

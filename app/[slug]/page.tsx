@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getArticleBySlug, getPublishedArticleSlugs } from '@/lib/db/queries'
 import ArticleContent from '@/components/ArticleContent'
+import ShareButtons from '@/components/ShareButtons'
 import type { Metadata } from 'next'
 
 export const dynamicParams = true
@@ -47,13 +48,18 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <article>
       <header className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">{article.title}</h1>
-        <div className="text-sm text-gray-400 flex gap-2">
+        <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-zinc-100">{article.title}</h1>
+        <div className="text-sm text-gray-400 dark:text-zinc-500 flex gap-2">
           {article.authorName && <span>{article.authorName}</span>}
           {date && <span>{date}</span>}
         </div>
       </header>
       <ArticleContent content={article.content ?? ''} />
+      <ShareButtons
+        url={`${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/${slug}`}
+        title={article.title}
+        excerpt={article.excerpt ?? undefined}
+      />
     </article>
   )
 }

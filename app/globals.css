@@ -1,2 +1,13 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+
+/* Drive `dark:` variant from `data-theme="dark"` set on <html>. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}

@@ -27,21 +27,21 @@ export default function LoginPage() {
 
   return (
     <div className="max-w-sm mx-auto mt-24">
-      <h1 className="text-xl font-semibold mb-6">Admin Login</h1>
+      <h1 className="text-xl font-semibold mb-6 text-gray-900 dark:text-zinc-100">Admin Login</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+          className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 rounded px-3 py-2 text-sm"
           required
         />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && <p className="text-red-500 dark:text-red-400 text-sm">{error}</p>}
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-gray-900 text-white rounded px-4 py-2 text-sm hover:bg-gray-700 disabled:opacity-50"
+          className="w-full bg-gray-900 text-white dark:bg-zinc-100 dark:text-zinc-900 rounded px-4 py-2 text-sm hover:bg-gray-700 dark:hover:bg-zinc-300 disabled:opacity-50"
         >
           {loading ? 'Logging in…' : 'Log in'}
         </button>

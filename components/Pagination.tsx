@@ -13,17 +13,17 @@ export default function Pagination({ page, total, pageSize }: Props) {
   return (
     <nav className="flex justify-between mt-8 text-sm">
       {page > 1 ? (
-        <Link href={`/?page=${page - 1}`} className="text-gray-500 hover:text-gray-900">
+        <Link href={`/?page=${page - 1}`} className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
           ← Newer
         </Link>
       ) : (
         <span />
       )}
-      <span className="text-gray-400">
+      <span className="text-gray-400 dark:text-gray-500">
         Page {page} of {totalPages}
       </span>
       {page < totalPages ? (
-        <Link href={`/?page=${page + 1}`} className="text-gray-500 hover:text-gray-900">
+        <Link href={`/?page=${page + 1}`} className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
           Older →
         </Link>
       ) : (

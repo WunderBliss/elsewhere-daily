@@ -14,14 +14,16 @@ export default function ArticleCard({ title, slug, excerpt, publishedAt, authorN
     : null
 
   return (
-    <article className="py-6 border-b border-gray-100 last:border-0">
+    <article className="py-6 border-b border-gray-100 dark:border-gray-800 last:border-0">
       <Link href={`/${slug}`} className="group">
-        <h2 className="text-lg font-semibold text-gray-900 group-hover:text-gray-600 mb-1">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-gray-600 dark:group-hover:text-gray-300 mb-1">
           {title}
         </h2>
       </Link>
-      {excerpt && <p className="text-gray-600 text-sm leading-relaxed mb-2">{excerpt}</p>}
-      <div className="text-xs text-gray-400 flex gap-2">
+      {excerpt && (
+        <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-2">{excerpt}</p>
+      )}
+      <div className="text-xs text-gray-400 dark:text-gray-500 flex gap-2">
         {authorName && <span>{authorName}</span>}
         {date && <span>{date}</span>}
       </div>

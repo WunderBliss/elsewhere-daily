@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { getArticleBySlug, getPublishedArticleSlugs } from '@/lib/db/queries'
 import ArticleContent from '@/components/ArticleContent'
 import ShareButtons from '@/components/ShareButtons'
+import ViewPinger from '@/components/ViewPinger'
 import { estimateReadingTime } from '@/lib/utils/reading-time'
 import type { Metadata } from 'next'
 
@@ -59,6 +60,7 @@ export default async function ArticlePage({ params }: Props) {
         </div>
       </header>
       <ArticleContent content={article.content ?? ''} />
+      <ViewPinger slug={slug} />
       <ShareButtons
         url={`${(process.env.NEXT_PUBLIC_SITE_URL ?? '').replace(/\/+$/, '')}/${slug}`}
         title={article.title}

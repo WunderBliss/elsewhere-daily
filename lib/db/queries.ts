@@ -1,6 +1,6 @@
 import { db } from './index'
 import { articles, authors } from './schema'
-import { eq, desc, count, and } from 'drizzle-orm'
+import { eq, desc, count, and, sql } from 'drizzle-orm'
 
 export const PAGE_SIZE = 20
 
@@ -17,6 +17,7 @@ export async function getPublishedArticles(page: number) {
         // page size 20 that this is not worth a denormalized column yet.
         content: articles.content,
         publishedAt: articles.publishedAt,
+        viewCount: articles.viewCount,
         authorName: authors.name,
       })
       .from(articles)
@@ -82,6 +83,18 @@ export async function getDraftArticles() {
 export async function getArticleById(id: string) {
   const [article] = await db.select().from(articles).where(eq(articles.id, id)).limit(1)
   return article ?? null
+}
+
+export async function incrementViewCount(slug: string): Promise<number | null> {
+  // Atomic increment scoped to published articles so we don't tally hits on
+  // drafts that happen to be addressable. Returns the new count, or null if
+  // the slug doesn't match a published article.
+  const [row] = await db
+    .update(articles)
+    .set({ viewCount: sql`${articles.viewCount} + 1` })
+    .where(and(eq(articles.slug, slug), eq(articles.status, 'published')))
+    .returning({ viewCount: articles.viewCount })
+  return row?.viewCount ?? null
 }
 
 export async function getDefaultAuthorId(): Promise<string | null> {

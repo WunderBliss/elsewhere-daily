@@ -11,6 +11,8 @@ export default async function AdminDashboard() {
 
   const formatDate = (d: Date | null) =>
     d ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(d) : '—'
+  const formatViews = (n: number) =>
+    new Intl.NumberFormat('en-US').format(n)
 
   return (
     <div>
@@ -49,7 +51,10 @@ export default async function AdminDashboard() {
               <Link href={`/admin/articles/${a.id}`} className="font-medium text-gray-900 hover:text-gray-600 dark:text-zinc-100 dark:hover:text-zinc-400 text-sm">
                 {a.title}
               </Link>
-              <span className="text-xs text-gray-400 dark:text-zinc-500">{formatDate(a.publishedAt)}</span>
+              <span className="flex items-center gap-3 text-xs text-gray-400 dark:text-zinc-500">
+                <span title="Total views (no dedup)">{formatViews(a.viewCount)} views</span>
+                <span>{formatDate(a.publishedAt)}</span>
+              </span>
             </li>
           ))}
         </ul>

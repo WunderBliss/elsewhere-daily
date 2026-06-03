@@ -6,9 +6,10 @@ interface Props {
   excerpt: string | null
   publishedAt: Date | null
   authorName: string | null
+  readingMinutes?: number
 }
 
-export default function ArticleCard({ title, slug, excerpt, publishedAt, authorName }: Props) {
+export default function ArticleCard({ title, slug, excerpt, publishedAt, authorName, readingMinutes }: Props) {
   const date = publishedAt
     ? new Intl.DateTimeFormat('en-US', { dateStyle: 'long' }).format(publishedAt)
     : null
@@ -23,9 +24,12 @@ export default function ArticleCard({ title, slug, excerpt, publishedAt, authorN
       {excerpt && (
         <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-2">{excerpt}</p>
       )}
-      <div className="text-xs text-gray-400 dark:text-gray-500 flex gap-2">
+      <div className="text-xs text-gray-400 dark:text-gray-500 flex flex-wrap gap-x-2 gap-y-1">
         {authorName && <span>{authorName}</span>}
         {date && <span>{date}</span>}
+        {readingMinutes && readingMinutes > 0 && (
+          <span>{readingMinutes} min read</span>
+        )}
       </div>
     </article>
   )

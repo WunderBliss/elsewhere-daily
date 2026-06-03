@@ -13,6 +13,9 @@ export async function getPublishedArticles(page: number) {
         title: articles.title,
         slug: articles.slug,
         excerpt: articles.excerpt,
+        // content needed for reading-time estimate; payload is small enough at
+        // page size 20 that this is not worth a denormalized column yet.
+        content: articles.content,
         publishedAt: articles.publishedAt,
         authorName: authors.name,
       })

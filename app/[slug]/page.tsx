@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { getArticleBySlug, getPublishedArticleSlugs } from '@/lib/db/queries'
 import ArticleContent from '@/components/ArticleContent'
 import ShareButtons from '@/components/ShareButtons'
+import { estimateReadingTime } from '@/lib/utils/reading-time'
 import type { Metadata } from 'next'
 
 export const dynamicParams = true
@@ -45,13 +46,16 @@ export default async function ArticlePage({ params }: Props) {
     ? new Intl.DateTimeFormat('en-US', { dateStyle: 'long' }).format(article.publishedAt)
     : null
 
+  const reading = estimateReadingTime(article.content)
+
   return (
     <article>
       <header className="mb-8">
         <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-zinc-100">{article.title}</h1>
-        <div className="text-sm text-gray-400 dark:text-zinc-500 flex gap-2">
+        <div className="text-sm text-gray-400 dark:text-zinc-500 flex flex-wrap gap-x-2 gap-y-1">
           {article.authorName && <span>{article.authorName}</span>}
           {date && <span>{date}</span>}
+          <span>{reading.label}</span>
         </div>
       </header>
       <ArticleContent content={article.content ?? ''} />

@@ -1,6 +1,7 @@
 import { getPublishedArticles, PAGE_SIZE } from '@/lib/db/queries'
 import ArticleCard from '@/components/ArticleCard'
 import Pagination from '@/components/Pagination'
+import { estimateReadingTime } from '@/lib/utils/reading-time'
 
 export const revalidate = false
 
@@ -20,8 +21,12 @@ export default async function HomePage({ searchParams }: Props) {
       {articles.length === 0 && (
         <p className="text-gray-500">No articles yet.</p>
       )}
-      {articles.map((article) => (
-        <ArticleCard key={article.id} {...article} />
+      {articles.map(({ content, ...article }) => (
+        <ArticleCard
+          key={article.id}
+          {...article}
+          readingMinutes={estimateReadingTime(content).minutes}
+        />
       ))}
       <Pagination page={page} total={total} pageSize={PAGE_SIZE} />
     </div>

@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const article = await getArticleBySlug(slug)
   if (!article) return {}
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? ''
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? '').replace(/\/+$/, '')
 
   return {
     title: `${article.title} | Elsewhere Daily`,
@@ -60,7 +60,7 @@ export default async function ArticlePage({ params }: Props) {
       </header>
       <ArticleContent content={article.content ?? ''} />
       <ShareButtons
-        url={`${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/${slug}`}
+        url={`${(process.env.NEXT_PUBLIC_SITE_URL ?? '').replace(/\/+$/, '')}/${slug}`}
         title={article.title}
         excerpt={article.excerpt ?? undefined}
       />

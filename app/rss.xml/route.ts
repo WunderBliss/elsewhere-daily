@@ -2,7 +2,7 @@ import { Feed } from 'feed'
 import { getAllPublishedArticlesForFeed } from '@/lib/db/queries'
 
 export async function GET() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? ''
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? '').replace(/\/+$/, '')
   const feedArticles = await getAllPublishedArticlesForFeed()
 
   const feed = new Feed({

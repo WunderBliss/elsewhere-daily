@@ -3,6 +3,15 @@ export interface ArticlePayload {
   content: string
   excerpt?: string
   tags: string[]
+  /**
+   * Optional client-supplied slug. When present, the route handler normalizes
+   * it via generateSlug() and uses it as the base for collision dedupe. When
+   * absent, the slug is derived from `title`. Validation here only ensures
+   * the field is a string — the route handler is responsible for the
+   * normalize-or-fall-back-to-title flow, since the normalized result may be
+   * empty (e.g. all emoji) and require fallback.
+   */
+  slug?: string
 }
 
 type ValidationResult =
@@ -14,7 +23,7 @@ export function validateArticlePayload(body: unknown): ValidationResult {
     return { valid: false, error: 'Request body must be a JSON object' }
   }
 
-  const { title, content, excerpt, tags } = body as Record<string, unknown>
+  const { title, content, excerpt, tags, slug } = body as Record<string, unknown>
 
   if (!title || typeof title !== 'string' || title.trim() === '') {
     return { valid: false, error: 'title is required and must be a non-empty string' }
@@ -30,6 +39,9 @@ export function validateArticlePayload(body: unknown): ValidationResult {
       return { valid: false, error: 'tags must be an array of strings' }
     }
   }
+  if (slug !== undefined && typeof slug !== 'string') {
+    return { valid: false, error: 'slug must be a string' }
+  }
 
   return {
     valid: true,
@@ -38,6 +50,7 @@ export function validateArticlePayload(body: unknown): ValidationResult {
       content: content.trim(),
       excerpt: typeof excerpt === 'string' ? excerpt.trim() : undefined,
       tags: Array.isArray(tags) ? (tags as string[]) : [],
+      slug: typeof slug === 'string' ? slug.trim() : undefined,
     },
   }
 }

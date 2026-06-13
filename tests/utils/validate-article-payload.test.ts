@@ -61,4 +61,28 @@ describe('validateArticlePayload', () => {
     expect(validateArticlePayload(null).valid).toBe(false)
     expect(validateArticlePayload('string').valid).toBe(false)
   })
+
+  it('accepts optional slug field as a string', () => {
+    const result = validateArticlePayload({ title: 'H', content: 'C', slug: 'custom-slug' })
+    expect(result.valid).toBe(true)
+    if (result.valid) expect(result.data.slug).toBe('custom-slug')
+  })
+
+  it('trims whitespace from slug', () => {
+    const result = validateArticlePayload({ title: 'H', content: 'C', slug: '  custom  ' })
+    expect(result.valid).toBe(true)
+    if (result.valid) expect(result.data.slug).toBe('custom')
+  })
+
+  it('leaves slug undefined when omitted', () => {
+    const result = validateArticlePayload({ title: 'H', content: 'C' })
+    expect(result.valid).toBe(true)
+    if (result.valid) expect(result.data.slug).toBeUndefined()
+  })
+
+  it('rejects non-string slug', () => {
+    const result = validateArticlePayload({ title: 'H', content: 'C', slug: 123 })
+    expect(result.valid).toBe(false)
+    if (!result.valid) expect(result.error).toMatch(/slug/)
+  })
 })

@@ -33,8 +33,21 @@ export async function POST(req: Request) {
     return Response.json({ error: validation.error }, { status: 422 })
   }
 
-  const { title, content, excerpt, tags } = validation.data
-  const baseSlug = generateSlug(title)
+  const { title, content, excerpt, tags, slug: suppliedSlug } = validation.data
+
+  // Slug resolution:
+  //   1. If client supplied a slug, normalize it. Use it if non-empty.
+  //   2. Otherwise (or if normalization wiped everything out, e.g. all emoji),
+  //      derive from the title.
+  //   3. Either way, run through findUniqueSlug for collision dedupe.
+  //
+  // generateSlug enforces the 40-char base cap, so all-emoji or pathological
+  // titles can't blow past it anymore.
+  const normalizedFromSlug = suppliedSlug ? generateSlug(suppliedSlug) : ''
+  // Final fallback: if both the supplied slug and the title normalize to empty
+  // (e.g. title is all emoji), use a generic stem so the article is still
+  // reachable. findUniqueSlug will dedupe.
+  const baseSlug = normalizedFromSlug || generateSlug(title) || 'untitled'
   const slug = await findUniqueSlug(baseSlug)
   const resolvedExcerpt = excerpt ?? extractExcerpt(content)
   const authorId = await getDefaultAuthorId()

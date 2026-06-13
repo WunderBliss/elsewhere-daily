@@ -17,6 +17,7 @@
     "@neondatabase/serverless": "^1.1.0",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.19",
+    "@uiw/react-md-editor": "^4.1.1",
     "drizzle-orm": "^0.45.2",
     "feed": "^5.2.1",
     "jose": "^6.2.3",

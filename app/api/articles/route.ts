@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm'
 import { validateArticlePayload } from '@/lib/utils/validate-article-payload'
 import { generateSlug } from '@/lib/utils/slug'
 import { extractExcerpt } from '@/lib/utils/excerpt'
-import { getDefaultAuthorId } from '@/lib/db/queries'
+import { getDefaultAuthorId, getPublishedArticles } from '@/lib/db/queries'
 
 async function findUniqueSlug(baseSlug: string): Promise<string> {
   let slug = baseSlug
@@ -45,4 +45,34 @@ export async function POST(req: Request) {
     .returning({ id: articles.id, slug: articles.slug })
 
   return Response.json({ id: article.id, slug: article.slug }, { status: 201 })
+}
+
+// Lists recently published articles for the MCP `list_recent_published` tool.
+// Returns ONLY published articles, so no auth — the data is already public on
+// the homepage. Exists as JSON so callers don't have to parse HTML.
+export async function GET(req: Request) {
+  const url = new URL(req.url)
+  const status = url.searchParams.get('status')
+  if (status !== 'published') {
+    return Response.json(
+      { error: 'Only status=published is supported on this endpoint' },
+      { status: 400 },
+    )
+  }
+
+  const limitParam = url.searchParams.get('limit')
+  const requested = limitParam ? parseInt(limitParam, 10) : 20
+  const limit = Math.max(1, Math.min(50, Number.isFinite(requested) ? requested : 20))
+
+  // Reuse the homepage query; trim to `limit` rows.
+  const { articles: published } = await getPublishedArticles(1)
+  const trimmed = published.slice(0, limit).map((a) => ({
+    slug: a.slug,
+    title: a.title,
+    excerpt: a.excerpt,
+    publishedAt: a.publishedAt?.toISOString() ?? null,
+    authorName: a.authorName,
+  }))
+
+  return Response.json({ articles: trimmed })
 }
